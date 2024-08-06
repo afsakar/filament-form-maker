@@ -1,0 +1,61 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create(config('form-maker.main_table'), function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->string('slug')->unique();
+            $table->json('options')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create(config('form-maker.table_prefix') . 'sections', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId(config('form-maker.table_prefix') . 'id')->constrained()->onDelete('cascade');
+            $table->json('title')->nullable();
+            $table->integer('columns')->default(1);
+            $table->json('options')->nullable();
+            $table->json('optional')->nullable();
+            $table->integer('order_column')->index()->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create(config('form-maker.table_prefix') . 'fields', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId(config('form-maker.table_prefix') . 'section_id')->constrained()->onDelete('cascade');
+            $table->json('name');
+            $table->string('type');
+            $table->json('options')->nullable();
+            $table->integer('order_column')->index()->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create(config('form-maker.table_prefix') . 'collections', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->string('type')->default('list');
+            $table->json('values')->nullable();
+            $table->string('model')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create(config('form-maker.table_prefix') . 'data', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->json('fields');
+            $table->string('locale')->nullable();
+            $table->string('ip')->nullable();
+            $table->string('user_agent')->nullable();
+            $table->string('url')->nullable();
+            $table->string('status')->default('open')->index();
+            $table->timestamps();
+        });
+    }
+};
