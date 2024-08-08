@@ -1,13 +1,7 @@
 <?php
 
 return [
-    'main_table' => 'form_maker',
-
-    'table_prefix' => 'form_maker_',
-
-    'models' => [
-        //
-    ],
+    'user' => App\Models\User::class, // @phpstan-ignore-line
 
     'extra_collections' => [
         //  App\Models\User::class => 'User List',

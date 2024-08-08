@@ -2,6 +2,9 @@
 
 namespace Afsakar\FormMaker;
 
+use Afsakar\FormMaker\Filament\Resources\FormBuilderCollectionResource;
+use Afsakar\FormMaker\Filament\Resources\FormBuilderDataResource;
+use Afsakar\FormMaker\Filament\Resources\FormBuilderResource;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 
@@ -14,7 +17,12 @@ class FormMakerPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        //
+        $panel
+            ->resources([
+                FormBuilderResource::class,
+                FormBuilderCollectionResource::class,
+                FormBuilderDataResource::class,
+            ]);
     }
 
     public function boot(Panel $panel): void

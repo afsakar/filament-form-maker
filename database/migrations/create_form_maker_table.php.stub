@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create(config('form-maker.main_table'), function (Blueprint $table) {
+        Schema::create('form_builders', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('slug')->unique();
@@ -16,28 +16,27 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create(config('form-maker.table_prefix') . 'sections', function (Blueprint $table) {
+        Schema::create('form_builder_sections', function (Blueprint $table) {
             $table->id();
-            $table->foreignId(config('form-maker.table_prefix') . 'id')->constrained()->onDelete('cascade');
-            $table->json('title')->nullable();
+            $table->foreignId('form_builder_id')->constrained()->onDelete('cascade');
+            $table->string('title')->nullable();
             $table->integer('columns')->default(1);
             $table->json('options')->nullable();
-            $table->json('optional')->nullable();
             $table->integer('order_column')->index()->nullable();
             $table->timestamps();
         });
 
-        Schema::create(config('form-maker.table_prefix') . 'fields', function (Blueprint $table) {
+        Schema::create('form_builder_fields', function (Blueprint $table) {
             $table->id();
-            $table->foreignId(config('form-maker.table_prefix') . 'section_id')->constrained()->onDelete('cascade');
-            $table->json('name');
+            $table->foreignId('form_builder_section_id')->constrained()->onDelete('cascade');
+            $table->string('name');
             $table->string('type');
             $table->json('options')->nullable();
             $table->integer('order_column')->index()->nullable();
             $table->timestamps();
         });
 
-        Schema::create(config('form-maker.table_prefix') . 'collections', function (Blueprint $table) {
+        Schema::create('form_builder_collections', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('type')->default('list');
@@ -46,7 +45,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create(config('form-maker.table_prefix') . 'data', function (Blueprint $table) {
+        Schema::create('form_builder_data', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->json('fields');

@@ -12,6 +12,7 @@ use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
+use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -30,6 +31,7 @@ class FormMakerServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package->name(static::$name)
+            ->hasViews('filament-form-maker')
             ->hasCommands($this->getCommands())
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
@@ -51,10 +53,6 @@ class FormMakerServiceProvider extends PackageServiceProvider
 
         if (file_exists($package->basePath('/../resources/lang'))) {
             $package->hasTranslations();
-        }
-
-        if (file_exists($package->basePath('/../resources/views'))) {
-            $package->hasViews(static::$viewNamespace);
         }
     }
 
@@ -87,6 +85,8 @@ class FormMakerServiceProvider extends PackageServiceProvider
 
         // Testing
         Testable::mixin(new TestsFormMaker);
+
+        Livewire::component('afsakar.form-builder', \Afsakar\FormMaker\Livewire\FormBuilder::class);
     }
 
     protected function getAssetPackageName(): ?string
@@ -101,8 +101,8 @@ class FormMakerServiceProvider extends PackageServiceProvider
     {
         return [
             // AlpineComponent::make('filament-form-maker', __DIR__ . '/../resources/dist/components/filament-form-maker.js'),
-            Css::make('filament-form-maker-styles', __DIR__ . '/../resources/dist/filament-form-maker.css'),
-            Js::make('filament-form-maker-scripts', __DIR__ . '/../resources/dist/filament-form-maker.js'),
+            Css::make('filament-form-maker-styles', __DIR__ . '/../resources/css/form.css'),
+            // Js::make('filament-form-maker-scripts', __DIR__ . '/../resources/dist/filament-form-maker.js'),
         ];
     }
 
@@ -146,7 +146,7 @@ class FormMakerServiceProvider extends PackageServiceProvider
     protected function getMigrations(): array
     {
         return [
-            'create_filament-form-maker_table',
+            'create_form_maker_table',
         ];
     }
 }
