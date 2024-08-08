@@ -40,14 +40,6 @@ This is the contents of the published config file:
 
 ```php
 return [
-    'main_table' => 'form_maker',
-
-    'table_prefix' => 'form_maker_',
-
-    'models' => [
-        //
-    ],
-
     'extra_collections' => [
         //  App\Models\User::class => 'User List',
     ],

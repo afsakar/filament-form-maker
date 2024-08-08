@@ -3,6 +3,7 @@
 namespace Afsakar\FormMaker\Models\Traits;
 
 use Afsakar\FormMaker\Models\FormBuilderCollection;
+use Filament\Facades\Filament;
 use Filament\Forms;
 
 trait HasOptions
@@ -59,10 +60,14 @@ trait HasOptions
                     ->schema([
                         Forms\Components\Select::make('admin_ids')
                             ->label('Kullanıcı E-postaları')
-                            ->hintIcon('tabler-info-circle', 'Forum\'un doldurulduktan sonra iletilmesini istediğiniz yöneticileri seçiniz.')
+                            ->hintIcon('tabler-info-circle', 'Forum\'un doldurulduktan sonra iletilmesini istediğiniz kullanıcıları seçiniz.')
                             ->native(false)
                             ->searchable()
-                            ->options(config('filament-form-maker.user')::pluck('name', 'id')->toArray())
+                            ->options(function () {
+                                $userModel = Filament::auth()->getProvider()->getModel(); // @phpstan-ignore-line
+
+                                return $userModel::all()->pluck('name', 'id')->toArray();
+                            })
                             ->multiple()
                             ->nullable(),
                     ]),
