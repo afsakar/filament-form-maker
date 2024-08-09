@@ -72,17 +72,38 @@ class FormBuilderResource extends Resource
                                     ->required()
                                     ->live(true)
                                     ->unique('form_builders', 'name', ignoreRecord: true)
-                                    ->afterStateUpdated(function ($state, $set, $context) {
-                                        if ($context === 'edit') {
-                                            return;
-                                        }
+                                    ->afterStateUpdated(function ($state, $set) {
                                         $set('slug', str($state)->slug());
                                     }),
                                 Forms\Components\TextInput::make('slug')
                                     ->label('Kısa Adı')
-                                    ->readOnly()
                                     ->hintIcon('heroicon-s-information-circle', 'Kısa Ad sadece alan oluşturulduğunda otomatik olarak oluşturulur. Kullanıcı için herhangi bir etkisi yoktur.')
                                     ->unique('form_builders', 'slug', ignoreRecord: true)
+                                    ->dehydrateStateUsing(function ($state) {
+                                        $slug = str($state)->slug();
+                                        $existingSlugs = FormBuilder::where('slug', 'LIKE', "{$slug}%")
+                                            ->pluck('slug');
+
+                                        if ($existingSlugs->contains($slug)) {
+                                            $numbers = $existingSlugs->map(function ($existingSlug) use ($slug) {
+                                                if (preg_match('/' . preg_quote($slug, '/') . '-(\d+)$/', $existingSlug, $matches)) {
+                                                    return intval($matches[1]);
+                                                }
+
+                                                return null;
+                                            })->filter()->sort()->values();
+
+                                            if ($numbers->isNotEmpty()) {
+                                                $newNumber = $numbers->last() + 1;
+                                            } else {
+                                                $newNumber = 2;
+                                            }
+
+                                            return $slug . '-' . $newNumber;
+                                        }
+
+                                        return $slug;
+                                    })
                                     ->required(),
                                 self::hiddenFormBuilderLabels(),
                             ]),
@@ -225,6 +246,51 @@ class FormBuilderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ReplicateAction::make()
+                    ->mutateRecordDataUsing(function (array $data): array {
+                        $data['name'] .= ' Copy';
+                        $data['slug'] .= '-copy';
+
+                        return $data;
+                    })
+                    ->form([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Adı')
+                            ->required()
+                            ->live(true)
+                            ->unique('form_builders', 'name', ignoreRecord: true)
+                            ->afterStateUpdated(function ($state, $set) {
+                                $set('slug', str($state)->slug());
+                            }),
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Kısa Adı')
+                            ->readOnly()
+                            ->hintIcon('heroicon-s-information-circle', 'Kısa Ad sadece alan oluşturulduğunda otomatik olarak oluşturulur. Kullanıcı için herhangi bir etkisi yoktur.')
+                            ->unique('form_builders', 'slug', ignoreRecord: true)
+                            ->required(),
+                    ])
+                    ->after(function (FormBuilder $replica, $record): void {
+                        $sections = $record->sections;
+
+                        foreach ($sections as $section) {
+                            $newSection = $section->replicate();
+                            $newSection->form_builder_id = $replica->id;
+                            $newSection->save();
+
+                            // Her section'ın fields ilişkisini de kopyala
+                            foreach ($section->fields as $field) {
+                                $newField = $field->replicate();
+                                $newField->form_builder_section_id = $newSection->id;
+                                $newField->save();
+                                $newField->update([
+                                    'options' => array_merge($field->options, [
+                                        'htmlId' => $field->options['htmlId'] . Str::random(2),
+                                        'fieldId' => $field->options['fieldId'] . Str::random(2),
+                                    ]),
+                                ]);
+                            }
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
