@@ -32,8 +32,6 @@ final class FieldBuilder
         $newSections = [];
         $fields = [];
 
-        $grid = 2;
-
         foreach ($sections as $section) {
 
             foreach ($section->fields as $field) {
@@ -45,10 +43,10 @@ final class FieldBuilder
                     ->columns([
                         'xs' => 1,
                         'sm' => 1,
-                        'md' => $section->columns ?? $grid,
-                        'lg' => $section->columns ?? $grid,
-                        'xl' => $section->columns ?? $grid,
-                        'default' => $section->columns ?? $grid,
+                        'md' => $section->columns ?? 1,
+                        'lg' => $section->columns ?? 1,
+                        'xl' => $section->columns ?? 1,
+                        'default' => 1,
                     ])
                     ->schema([
                         self::placeholder($section->title),

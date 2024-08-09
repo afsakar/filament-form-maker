@@ -43,7 +43,7 @@ class FormBuilderCollectionResource extends Resource
                                 'list' => 'Liste',
                                 'model' => 'Model',
                             ])
-                            ->default('list'),
+                            ->required(),
                         Forms\Components\Select::make('model')
                             ->label('Model')
                             ->visible(fn ($get) => $get('type') === 'model')

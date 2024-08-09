@@ -20,7 +20,7 @@ class FormBuilderCollection extends Model
      */
     protected $fillable = [
         'name',
-        'types',
+        'type',
         'values',
         'model',
     ];
