@@ -17,7 +17,19 @@ You can install the package via composer:
 composer require afsakar/filament-form-maker
 ```
 
-You can publish and run the migrations with:
+Form Maker uses Spatie Media Library package. If you haven't published the media table yet, you can publish it with:
+
+```bash
+php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-migrations"
+```
+
+If you haven't published the notifications table yet, you can publish it with:
+
+```bash
+php artisan notifications:table
+```
+
+Then finally you need to publish main tables and run the migrations with:
 
 ```bash
 php artisan vendor:publish --tag="filament-form-maker-migrations"

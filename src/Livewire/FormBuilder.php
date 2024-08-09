@@ -44,10 +44,6 @@ class FormBuilder extends Component implements HasForms
         return $form
             ->schema([
                 FieldBuilder::make($this->builderModel),
-                Forms\Components\Hidden::make('terms')
-                    ->default(false)
-                    ->rule(['accepted'])
-                    ->dehydrated(false),
             ])
             ->statePath('fields');
     }

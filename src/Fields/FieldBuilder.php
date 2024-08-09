@@ -61,8 +61,8 @@ final class FieldBuilder
     protected static function placeholder(?string $title): Forms\Components\Placeholder
     {
         return Forms\Components\Placeholder::make('title')
-            ->label(new HtmlString('<div class="afsakar-section-title flex items-center relative gap-[50px] sm:gap-20 pt-30">
-                        <p class="text text-[20px] md:text-[18px] sm:text-[16px] leading-tight text-secondary font-bold w-fit relative z-2 whitespace-nowrap">' . $title . '</p>
+            ->label(new HtmlString('<div class="afsakar-section-title flex items-center relative gap-[50px] sm:gap-20">
+                        <p class="text text-[20px] md:text-[18px] sm:text-[16px] leading-tight font-bold w-fit relative z-2">' . $title . '</p>
                       </div>'))
             ->columnSpanFull()
             ->hidden(! $title)
