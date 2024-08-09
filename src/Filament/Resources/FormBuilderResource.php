@@ -40,11 +40,13 @@ class FormBuilderResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Form Bilgileri')
                     ->headerActions([
-                        Forms\Components\Actions\Action::make('Form Ayarları')
+                        Forms\Components\Actions\Action::make('form_settings')
+                            ->hiddenLabel()
                             ->slideOver()
                             ->tooltip('Form Ayarları')
                             ->icon('heroicon-m-cog')
                             ->modalIcon('heroicon-m-cog')
+                            ->modalHeading('Form Ayarları')
                             ->modalDescription('Daha Fazla Form Ayarları')
                             ->fillForm(fn (
                                 $state,
