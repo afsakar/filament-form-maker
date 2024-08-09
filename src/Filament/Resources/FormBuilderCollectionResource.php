@@ -36,23 +36,27 @@ class FormBuilderCollectionResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label('Adı')
                             ->required(),
-                        Forms\Components\Select::make('type')
+                        Forms\Components\ToggleButtons::make('type')
                             ->label('Tipi')
                             ->live()
+                            ->inline()
                             ->options([
                                 'list' => 'Liste',
                                 'model' => 'Model',
                             ])
+                            ->default('list')
                             ->required(),
                         Forms\Components\Select::make('model')
                             ->label('Model')
                             ->visible(fn ($get) => $get('type') === 'model')
                             ->live()
+                            ->native(false)
+                            ->preload()
                             ->options(function () {
                                 $collections = FormBuilderHelper::getAllResources();
 
                                 return [
-                                    config('filament-form-maker.extra_collections'),
+                                    ...(array) config('filament-form-maker.extra_collections'),
                                     ...$collections,
                                 ];
                             })
