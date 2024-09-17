@@ -104,6 +104,7 @@ class FormBuilderDataResource extends Resource
                                 fn ($state) => collect($state)
                                     ->reject(fn ($value, $key) => strtolower((string) $key) === 'locale')
                                     ->sortBy(fn ($value, $key) => $key)
+                                    ->filter()
                                     ->map(fn ($value, $key) => TextEntry::make($key)
                                         ->label($key)
                                         ->getStateUsing(fn () => $value))->values()->all()
