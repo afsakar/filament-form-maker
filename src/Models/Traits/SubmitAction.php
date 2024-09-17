@@ -76,7 +76,7 @@ trait SubmitAction
             ->send();
     }
 
-    protected function attachFile($file, $form, $collection = 'file'): void
+    protected function attachFile($file, $form, $collection = 'form-builder'): void
     {
         $file = is_array($file) ? head($file) : $file;
 
