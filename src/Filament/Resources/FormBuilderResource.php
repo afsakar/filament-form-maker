@@ -82,29 +82,7 @@ class FormBuilderResource extends Resource
                                     ->hintIcon('heroicon-s-information-circle', 'Kısa Ad sadece alan oluşturulduğunda otomatik olarak oluşturulur. Kullanıcı için herhangi bir etkisi yoktur.')
                                     ->unique('form_builders', 'slug', ignoreRecord: true)
                                     ->dehydrateStateUsing(function ($state) {
-                                        $slug = str($state)->slug();
-                                        $existingSlugs = FormBuilder::where('slug', 'LIKE', "{$slug}%")
-                                            ->pluck('slug');
-
-                                        if ($existingSlugs->contains($slug)) {
-                                            $numbers = $existingSlugs->map(function ($existingSlug) use ($slug) {
-                                                if (preg_match('/' . preg_quote($slug, '/') . '-(\d+)$/', $existingSlug, $matches)) {
-                                                    return intval($matches[1]);
-                                                }
-
-                                                return null;
-                                            })->filter()->sort()->values();
-
-                                            if ($numbers->isNotEmpty()) {
-                                                $newNumber = $numbers->last() + 1;
-                                            } else {
-                                                $newNumber = 2;
-                                            }
-
-                                            return $slug . '-' . $newNumber;
-                                        }
-
-                                        return $slug;
+                                        return Str::slug($state);
                                     })
                                     ->required(),
                                 self::hiddenFormBuilderLabels(),
