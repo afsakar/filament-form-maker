@@ -101,7 +101,7 @@ class FormMakerServiceProvider extends PackageServiceProvider
     {
         return [
             // AlpineComponent::make('filament-form-maker', __DIR__ . '/../resources/dist/components/filament-form-maker.js'),
-            Css::make('filament-form-maker-styles', __DIR__ . '/../resources/css/form.css'),
+            // Css::make('filament-form-maker-styles', __DIR__ . '/../resources/css/form.css'),
             // Js::make('filament-form-maker-scripts', __DIR__ . '/../resources/dist/filament-form-maker.js'),
         ];
     }

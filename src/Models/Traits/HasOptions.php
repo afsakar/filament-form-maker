@@ -10,38 +10,44 @@ trait HasOptions
 {
     use HasHiddenOptions;
 
-    protected static function staticFieldOptions(): Forms\Components\Grid
+    protected static function staticFieldOptions(?int $columns): Forms\Components\Grid
     {
         return Forms\Components\Grid::make()
             ->statePath('options')
             ->columns(2)
-            ->schema([
-                Forms\Components\TextInput::make('static_name')
-                    ->label('Bildirim Adı')
-                    ->nullable(),
-                Forms\Components\Toggle::make('is_required')
-                    ->label('Zorunlu Alan')
-                    ->default(true),
-                Forms\Components\TextInput::make('fieldId')
-                    ->required()
-                    ->default(str()->random(6))
-                    ->readOnly()
-                    ->label(__('Alan ID')),
-                Forms\Components\TextInput::make('htmlId')
-                    ->required()
-                    ->default(str()->random(6))
-                    ->readOnly()
-                    ->label(__('HTML ID')),
-                Forms\Components\ToggleButtons::make('column_span')
-                    ->label('Sütun Genişliği')
-                    ->options([
-                        '1' => '1/3',
-                        '2' => '2/3',
-                        'full' => 'Tam Genişlik',
-                    ])
-                    ->inline()
-                    ->default('1'),
-            ])
+            ->schema(function () use ($columns) {
+                $colspanOptions = [];
+
+                foreach (range(1, $columns) as $column) {
+                    $colspanOptions[$column] = $column . '/' . $columns;
+                }
+
+                $colspanOptions['full'] = 'Tam Genişlik';
+
+                return [
+                    Forms\Components\TextInput::make('static_name')
+                        ->label('Bildirim Adı')
+                        ->nullable(),
+                    Forms\Components\Toggle::make('is_required')
+                        ->label('Zorunlu Alan')
+                        ->default(true),
+                    Forms\Components\TextInput::make('fieldId')
+                        ->required()
+                        ->default(str()->random(6))
+                        ->readOnly()
+                        ->label(__('Alan ID')),
+                    Forms\Components\TextInput::make('htmlId')
+                        ->required()
+                        ->default(str()->random(6))
+                        ->readOnly()
+                        ->label(__('HTML ID')),
+                    Forms\Components\Select::make('column_span')
+                        ->label('Sütun Genişliği')
+                        ->options($colspanOptions)
+                        ->searchable()
+                        ->default('1'),
+                ];
+            })
             ->columns(1);
     }
 

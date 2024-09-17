@@ -26,7 +26,6 @@ class FileInput extends Field
             ->acceptedFileTypes(data_get($field, 'options.accepted_file_types') ?? ['application/pdf'])
             ->maxSize(data_get($field, 'options.max_size', 5120))
             ->directory('form')
-            ->helperText(trans('validation.max.file', ['attribute' => data_get($field, 'name'), 'max' => data_get($field, 'options.max_size', 5120)]))
             ->storeFiles(false)
             ->visible(function ($get) use ($field) {
                 $visibilty = data_get($field, 'options.visibility');

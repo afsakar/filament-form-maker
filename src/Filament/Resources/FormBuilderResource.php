@@ -123,22 +123,28 @@ class FormBuilderResource extends Resource
                         fn ($action) => $action->requiresConfirmation(),
                     )
                     ->schema([
-                        Forms\Components\TextInput::make('title')
-                            ->label('Başlık')
-                            ->lazy()
-                            ->nullable(),
-                        Forms\Components\Select::make('columns')
-                            ->options(fn (): array => array_combine(range(1, 3), range(1, 3)))
-                            ->label('Sütun Sayısı')
-                            ->required()
-                            ->default(1)
-                            ->hint('Bölümün sütun sayısını belirler.'),
+                        Forms\Components\Grid::make()
+                            ->schema([
+                                Forms\Components\TextInput::make('title')
+                                    ->label('Başlık')
+                                    ->lazy()
+                                    ->nullable(),
+                                Forms\Components\Select::make('columns')
+                                    ->options(fn (): array => array_combine(range(1, 12), range(1, 12)))
+                                    ->label('Sütun Sayısı')
+                                    ->required()
+                                    ->searchable()
+                                    ->live(onBlur: true)
+                                    ->default(1)
+                                    ->hint('Bölümün sütun sayısını belirler.'),
+                            ]),
 
                         Forms\Components\Repeater::make('fields')
                             ->label('Alanlar')
                             ->addActionLabel('Alan Ekle')
                             ->minItems(1)
                             ->grid(3)
+                            ->visible(fn ($get) => $get('columns'))
                             ->itemLabel(fn ($state) => $state['name'] ?? 'Yeni Alan')
                             ->collapsed(fn (string $operation) => $operation === 'edit')
                             ->cloneable()
@@ -154,6 +160,7 @@ class FormBuilderResource extends Resource
                                     ->modalDescription('Daha Fazla Alan Ayarları')
                                     ->fillForm(fn (
                                         $state,
+                                        $get,
                                         array $arguments,
                                         Forms\Components\Repeater $component
                                     ) => $component->getItemState($arguments['item']))
@@ -162,7 +169,7 @@ class FormBuilderResource extends Resource
 
                                         $type = $arguments['type'] ?? null;
 
-                                        $collections = match ($type) {
+                                        $dynamicOptions = match ($type) {
                                             'select' => static::selectFieldOptions(),
                                             'checkbox', 'radio' => static::checkboxRadioFieldOptions(),
                                             'text' => static::textFieldOptions(),
@@ -174,10 +181,12 @@ class FormBuilderResource extends Resource
 
                                         $fields = $parentComponent?->getState();
 
+                                        $columns = $get('columns');
+
                                         return [
-                                            static::staticFieldOptions(),
+                                            static::staticFieldOptions($columns),
                                             static::getConditionalFieldOptions($fields),
-                                            ...$collections,
+                                            ...$dynamicOptions,
                                         ];
                                     })
                                     ->action(function (array $data, array $arguments, Forms\Components\Repeater $component): void {
