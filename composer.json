@@ -26,7 +26,7 @@
         "ryangjchandler/blade-tabler-icons": "^2.3",
         "spatie/eloquent-sortable": "^4.0",
         "spatie/laravel-package-tools": "^1.15.0",
-        "ysfkaya/filament-phone-input": "^2.0"
+        "ysfkaya/filament-phone-input": "^3.1"
     },
     "require-dev": {
         "laravel/pint": "^1.0",
