@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Str;
 
 class FormBuilderResource extends Resource
@@ -19,48 +20,52 @@ class FormBuilderResource extends Resource
 
     protected static ?string $model = FormBuilder::class;
 
-    protected static ?string $navigationIcon = 'tabler-forms';
-
-    protected static ?string $slug = 'form-builder';
-
-    protected static ?string $navigationGroup = 'Form Yönetimi';
+    protected static ?string $slug = 'form-management/forms';
 
     protected static ?int $navigationSort = 1;
 
-    protected static ?string $modelLabel = 'Form Oluşturucu';
-
-    protected static ?string $pluralModelLabel = 'Form Oluşturucular';
-
     protected static ?string $recordTitleAttribute = 'name';
+
+    public static function getNavigationGroup(): string
+    {
+        return trans('filament-form-maker::form-maker.navigation_group');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return trans('filament-form-maker::form-maker.resources.builder.model_label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('filament-form-maker::form-maker.resources.builder.plural_model_label');
+    }
+
+    public static function getNavigationIcon(): string | Htmlable | null
+    {
+        return config('filament-form-maker.navigation_icons.builder', 'tabler-forms');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->columns(1)
             ->schema([
-                Forms\Components\Section::make('Form Bilgileri')
+                Forms\Components\Section::make(trans('filament-form-maker::form-maker.resources.builder.section_title'))
                     ->headerActions([
                         Forms\Components\Actions\Action::make('form_settings')
                             ->hiddenLabel()
                             ->slideOver()
-                            ->tooltip('Form Ayarları')
+                            ->tooltip(trans('filament-form-maker::form-maker.resources.builder.options.title'))
                             ->icon('heroicon-m-cog')
                             ->modalIcon('heroicon-m-cog')
-                            ->modalHeading('Form Ayarları')
-                            ->modalDescription('Daha Fazla Form Ayarları')
-                            ->fillForm(fn (
-                                $state,
-                                array $arguments,
-                                $component
-                            ) => $component->getState())
-                            ->form(function ($get, array $arguments, $component, $state) {
-                                $arguments = $component->getState();
-
-                                return [
-                                    static::staticFormBuilderOptions(),
-                                ];
-                            })
-                            ->action(function (array $data, array $arguments, $component): void {
+                            ->modalHeading(trans('filament-form-maker::form-maker.resources.builder.options.title'))
+                            ->modalDescription(trans('filament-form-maker::form-maker.resources.builder.options.description'))
+                            ->fillForm(fn ($component) => $component->getState())
+                            ->form([
+                                static::staticFormBuilderOptions(),
+                            ])
+                            ->action(function (array $data, $component): void {
                                 $state = $component->getState();
                                 $state = array_merge($state, $data);
                                 $component->state($state);
@@ -70,15 +75,15 @@ class FormBuilderResource extends Resource
                         Forms\Components\Grid::make()
                             ->schema([
                                 Forms\Components\TextInput::make('name')
-                                    ->label('Adı')
+                                    ->label(trans('filament-form-maker::form-maker.resources.builder.inputs.name'))
                                     ->required()
+                                    ->columnSpanFull()
                                     ->live(true)
                                     ->unique('form_builders', 'name', ignoreRecord: true)
                                     ->afterStateUpdated(function ($state, $set) {
                                         $set('slug', str($state)->slug());
                                     }),
-                                Forms\Components\TextInput::make('slug')
-                                    ->label('Kısa Adı')
+                                Forms\Components\Hidden::make('slug')
                                     ->hintIcon('heroicon-s-information-circle', 'Kısa Ad sadece alan oluşturulduğunda otomatik olarak oluşturulur. Kullanıcı için herhangi bir etkisi yoktur.')
                                     ->unique('form_builders', 'slug', ignoreRecord: true)
                                     ->dehydrateStateUsing(function ($state) {
@@ -89,9 +94,9 @@ class FormBuilderResource extends Resource
                             ]),
                     ]),
                 Forms\Components\Repeater::make('sections')
-                    ->label('Bölümler')
-                    ->addActionLabel('Bölüm Ekle')
-                    ->itemLabel(fn ($state) => $state['title'] ?? 'Yeni Bölüm')
+                    ->label(trans('filament-form-maker::form-maker.resources.builder.sections.title'))
+                    ->addActionLabel(trans('filament-form-maker::form-maker.resources.builder.sections.add_action_label'))
+                    ->itemLabel(fn ($state) => $state['title'] ?? trans('filament-form-maker::form-maker.resources.builder.sections.new_section_label'))
                     ->collapsed(fn (string $operation) => $operation === 'edit')
                     ->cloneable()
                     ->relationship('sections')
@@ -104,48 +109,45 @@ class FormBuilderResource extends Resource
                         Forms\Components\Grid::make()
                             ->schema([
                                 Forms\Components\TextInput::make('title')
-                                    ->label('Başlık')
+                                    ->label(trans('filament-form-maker::form-maker.resources.builder.sections.inputs.title'))
                                     ->lazy()
                                     ->nullable(),
                                 Forms\Components\Select::make('columns')
                                     ->options(fn (): array => array_combine(range(1, 12), range(1, 12)))
-                                    ->label('Sütun Sayısı')
+                                    ->label(trans('filament-form-maker::form-maker.resources.builder.sections.inputs.columns'))
                                     ->required()
                                     ->searchable()
                                     ->live(onBlur: true)
                                     ->default(1)
-                                    ->hint('Bölümün sütun sayısını belirler.'),
+                                    ->hint(trans('filament-form-maker::form-maker.resources.builder.sections.inputs.columns_hint')),
                             ]),
 
                         Forms\Components\Repeater::make('fields')
-                            ->label('Alanlar')
-                            ->addActionLabel('Alan Ekle')
+                            ->label(trans('filament-form-maker::form-maker.resources.builder.fields.title'))
+                            ->addActionLabel(trans('filament-form-maker::form-maker.resources.builder.fields.add_action_label'))
                             ->minItems(1)
                             ->grid(3)
                             ->visible(fn ($get) => $get('columns'))
-                            ->itemLabel(fn ($state) => $state['name'] ?? 'Yeni Alan')
+                            ->itemLabel(fn ($state) => $state['name'] ?? trans('filament-form-maker::form-maker.resources.builder.fields.new_field_label'))
                             ->collapsed(fn (string $operation) => $operation === 'edit')
                             ->cloneable()
                             ->deleteAction(
                                 fn ($action) => $action->requiresConfirmation(),
                             )
                             ->extraItemActions([
-                                Forms\Components\Actions\Action::make('Alan Ayarları')
+                                Forms\Components\Actions\Action::make(trans('filament-form-maker::form-maker.resources.builder.fields.options.title'))
                                     ->slideOver()
-                                    ->tooltip('Alan Ayarları')
+                                    ->tooltip(trans('filament-form-maker::form-maker.resources.builder.fields.options.title'))
                                     ->icon('heroicon-m-cog')
                                     ->modalIcon('heroicon-m-cog')
-                                    ->modalDescription('Daha Fazla Alan Ayarları')
-                                    ->fillForm(fn (
-                                        $state,
-                                        $get,
-                                        array $arguments,
-                                        Forms\Components\Repeater $component
-                                    ) => $component->getItemState($arguments['item']))
-                                    ->form(function ($get, array $arguments, Forms\Components\Repeater $component, $state) {
+                                    ->modalDescription(trans('filament-form-maker::form-maker.resources.builder.fields.options.description'))
+                                    ->fillForm(fn (array $arguments, Forms\Components\Repeater $component) => $component->getItemState($arguments['item']))
+                                    ->form(function ($get, array $arguments, Forms\Components\Repeater $component) {
                                         $arguments = $component->getState()[$arguments['item']];
 
                                         $type = $arguments['type'] ?? null;
+
+                                        $columns = $get('columns');
 
                                         $dynamicOptions = match ($type) {
                                             'select' => static::selectFieldOptions(),
@@ -158,8 +160,6 @@ class FormBuilderResource extends Resource
                                         $parentComponent = $component->getParentRepeater();
 
                                         $fields = $parentComponent?->getState();
-
-                                        $columns = $get('columns');
 
                                         return [
                                             static::staticFieldOptions($columns),
@@ -198,7 +198,7 @@ class FormBuilderResource extends Resource
                             ->orderColumn('order_column')
                             ->schema([
                                 Forms\Components\TextInput::make('name')
-                                    ->label('Alan Adı')
+                                    ->label(trans('filament-form-maker::form-maker.resources.builder.fields.inputs.name'))
                                     ->lazy()
                                     ->afterStateUpdated(function ($state, $set, $context) {
                                         if ($context === 'edit') {
@@ -208,7 +208,7 @@ class FormBuilderResource extends Resource
                                     })
                                     ->required(),
                                 Forms\Components\Select::make('type')
-                                    ->label('Alan Tipi')
+                                    ->label(trans('filament-form-maker::form-maker.resources.builder.fields.inputs.type'))
                                     ->options(FieldTypes::options())
                                     ->native(false)
                                     ->searchable()
@@ -226,9 +226,10 @@ class FormBuilderResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
-                    ->label('Adı'),
-                Tables\Columns\TextColumn::make('slug')
-                    ->label('Kısa Adı'),
+                    ->label(trans('filament-form-maker::form-maker.resources.builder.inputs.name')),
+                Tables\Columns\TextColumn::make('sections_count')
+                    ->label(trans('filament-form-maker::form-maker.resources.builder.sections.count'))
+                    ->counts('sections'),
             ])
             ->filters([
                 //
@@ -244,16 +245,14 @@ class FormBuilderResource extends Resource
                     })
                     ->form([
                         Forms\Components\TextInput::make('name')
-                            ->label('Adı')
+                            ->label(trans('filament-form-maker::form-maker.resources.builder.inputs.name'))
                             ->required()
-                            ->live(true)
+                            ->live()
                             ->unique('form_builders', 'name', ignoreRecord: true)
                             ->afterStateUpdated(function ($state, $set) {
                                 $set('slug', str($state)->slug());
                             }),
-                        Forms\Components\TextInput::make('slug')
-                            ->label('Kısa Adı')
-                            ->readOnly()
+                        Forms\Components\Hidden::make('slug')
                             ->hintIcon('heroicon-s-information-circle', 'Kısa Ad sadece alan oluşturulduğunda otomatik olarak oluşturulur. Kullanıcı için herhangi bir etkisi yoktur.')
                             ->unique('form_builders', 'slug', ignoreRecord: true)
                             ->required(),
@@ -266,7 +265,6 @@ class FormBuilderResource extends Resource
                             $newSection->form_builder_id = $replica->id;
                             $newSection->save();
 
-                            // Her section'ın fields ilişkisini de kopyala
                             foreach ($section->fields as $field) {
                                 $newField = $field->replicate();
                                 $newField->form_builder_section_id = $newSection->id;

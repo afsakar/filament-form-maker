@@ -14,6 +14,8 @@ class FileInput extends Field
     {
         return Forms\Components\FileUpload::make(data_get($field, 'options.fieldId'))
             ->label(data_get($field, 'name'))
+            ->hiddenLabel(data_get($field, 'options.hidden_label', false))
+            ->placeholder(data_get($field, 'options.hidden_label', false) ? (data_get($field, 'options.placeholder') !== null ? data_get($field, 'options.placeholder') : data_get($field, 'name')) : null)
             ->columnSpan([
                 'xs' => 1,
                 'sm' => 1,
@@ -22,6 +24,7 @@ class FileInput extends Field
                 'xl' => data_get($field, 'options.column_span', 1),
                 'default' => data_get($field, 'options.column_span', 1),
             ])
+            ->reactive()
             ->id(data_get($field, 'options.htmlId'))
             ->acceptedFileTypes(data_get($field, 'options.accepted_file_types') ?? ['application/pdf'])
             ->maxSize(data_get($field, 'options.max_size', 5120))
@@ -42,8 +45,9 @@ class FileInput extends Field
                     return $get($fieldId);
                 }
 
-                return $value === $get($fieldId);
+                return in_array($get($fieldId), $value);
             })
+            ->helperText(data_get($field, 'options.helper_text', null))
             ->required(data_get($field, 'options.is_required', false));
     }
 }

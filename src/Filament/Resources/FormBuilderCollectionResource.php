@@ -10,22 +10,37 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 
 class FormBuilderCollectionResource extends Resource
 {
     protected static ?string $model = FormBuilderCollection::class;
 
-    protected static ?string $navigationIcon = 'tabler-category';
-
-    protected static ?string $slug = 'form-builder-collections';
-
-    protected static ?string $navigationGroup = 'Form Yönetimi';
+    protected static ?string $slug = 'form-management/collections';
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $modelLabel = 'Form Koleksiyonu';
+    protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $pluralModelLabel = 'Form Koleksiyonları';
+    public static function getNavigationGroup(): string
+    {
+        return trans('filament-form-maker::form-maker.navigation_group');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return trans('filament-form-maker::form-maker.resources.collections.model_label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('filament-form-maker::form-maker.resources.collections.plural_model_label');
+    }
+
+    public static function getNavigationIcon(): string | Htmlable | null
+    {
+        return config('filament-form-maker.navigation_icons.collections', 'tabler-forms');
+    }
 
     public static function form(Form $form): Form
     {
@@ -49,7 +64,6 @@ class FormBuilderCollectionResource extends Resource
                         Forms\Components\Select::make('model')
                             ->label('Model')
                             ->visible(fn ($get) => $get('type') === 'model')
-                            ->live()
                             ->native(false)
                             ->preload()
                             ->options(function () {
@@ -67,11 +81,11 @@ class FormBuilderCollectionResource extends Resource
                             ->addActionLabel('Değer Ekle')
                             ->grid(3)
                             ->schema([
-                                Forms\Components\TextInput::make('value')
-                                    ->label('Değer')
-                                    ->required(),
                                 Forms\Components\TextInput::make('label')
                                     ->label('Etiket')
+                                    ->required(),
+                                Forms\Components\TextInput::make('value')
+                                    ->label('Değer')
                                     ->required(),
                             ]),
                     ]),

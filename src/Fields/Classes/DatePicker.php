@@ -11,8 +11,9 @@ class DatePicker extends Field
     public static function make(FormBuilderField $field): Forms\Components\Field
     {
         return Forms\Components\DatePicker::make(data_get($field, 'options.fieldId'))
-            ->hiddenLabel()
-            ->placeholder(data_get($field, 'options.is_required', false) ? data_get($field, 'name') . ' *' : data_get($field, 'name'))
+            ->label(data_get($field, 'name'))
+            ->hiddenLabel(data_get($field, 'options.hidden_label', false))
+            ->placeholder(data_get($field, 'options.hidden_label', false) ? (data_get($field, 'options.placeholder') !== null ? data_get($field, 'options.placeholder') : data_get($field, 'name')) : null)
             ->columnSpan([
                 'xs' => 1,
                 'sm' => 1,
@@ -21,6 +22,7 @@ class DatePicker extends Field
                 'xl' => data_get($field, 'options.column_span', 1),
                 'default' => data_get($field, 'options.column_span', 1),
             ])
+            ->reactive()
             ->id(data_get($field, 'options.htmlId'))
             ->closeOnDateSelection()
             ->format('d F Y')
@@ -41,8 +43,9 @@ class DatePicker extends Field
                     return $get($fieldId);
                 }
 
-                return $value === $get($fieldId);
+                return in_array($get($fieldId), $value);
             })
+            ->helperText(data_get($field, 'options.helper_text', null))
             ->required(data_get($field, 'options.is_required', false));
     }
 }

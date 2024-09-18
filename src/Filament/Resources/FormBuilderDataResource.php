@@ -13,6 +13,7 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 
@@ -20,21 +21,30 @@ class FormBuilderDataResource extends Resource
 {
     protected static ?string $model = FormBuilderData::class;
 
-    protected static ?string $navigationIcon = 'tabler-report';
-
-    protected static ?string $slug = 'form-data';
-
-    protected static ?string $navigationGroup = 'Form Yönetimi';
+    protected static ?string $slug = 'form-management/data';
 
     protected static ?int $navigationSort = 3;
 
-    protected static ?string $modelLabel = 'Formlar';
+    protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $pluralModelLabel = 'Formlar';
-
-    public static function getRecordTitle(?Model $record): ?string
+    public static function getNavigationGroup(): string
     {
-        return 'name';
+        return trans('filament-form-maker::form-maker.navigation_group');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return trans('filament-form-maker::form-maker.resources.form_data.model_label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('filament-form-maker::form-maker.resources.form_data.plural_model_label');
+    }
+
+    public static function getNavigationIcon(): string | Htmlable | null
+    {
+        return config('filament-form-maker.navigation_icons.form_data', 'tabler-forms');
     }
 
     public static function getNavigationBadge(): ?string

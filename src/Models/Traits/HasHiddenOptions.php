@@ -23,6 +23,8 @@ trait HasHiddenOptions
         return Forms\Components\Group::make()
             ->statePath('options')
             ->schema([
+                Forms\Components\Hidden::make('placeholder')->default(null),
+                Forms\Components\Hidden::make('hidden_label')->default(false),
                 Forms\Components\Hidden::make('is_required')->default(true),
                 Forms\Components\Hidden::make('is_multiple')->default(false),
                 Forms\Components\Hidden::make('is_searchable')->default(false),
@@ -31,6 +33,7 @@ trait HasHiddenOptions
                 Forms\Components\Hidden::make('field_type')->default('text'),
                 Forms\Components\Hidden::make('column_span')->default(1),
                 Forms\Components\Hidden::make('data_source'),
+                Forms\Components\Hidden::make('helper_text')->default(null),
             ])
             ->columns(1);
     }

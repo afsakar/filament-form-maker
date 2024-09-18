@@ -29,6 +29,7 @@ class Radio extends Field
                 'xl' => data_get($field, 'options.columns', 2),
                 'default' => data_get($field, 'options.columns', 2),
             ])
+            ->reactive()
             ->gridDirection('row')
             ->id(data_get($field, 'options.htmlId'))
             ->options(self::getOptions($field))
@@ -47,8 +48,9 @@ class Radio extends Field
                     return $get($fieldId);
                 }
 
-                return $value === $get($fieldId);
+                return in_array($get($fieldId), $value);
             })
+            ->helperText(data_get($field, 'options.helper_text', null))
             ->required(data_get($field, 'options.is_required', false));
     }
 

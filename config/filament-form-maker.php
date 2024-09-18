@@ -9,4 +9,10 @@ return [
     'extra_fields' => [
         // 'field_name' => Field::class
     ],
+
+    'navigation_icons' => [
+        'builder' => 'tabler-forms',
+        'collections' => 'tabler-category',
+        'form_data' => 'tabler-file-text',
+    ],
 ];
