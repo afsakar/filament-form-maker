@@ -16,14 +16,14 @@ enum FieldTypes: string
     public function label(): string
     {
         return match ($this) {
-            self::TEXT => 'Metin',
-            self::PHONE => 'Telefon',
-            self::TEXTAREA => 'Uzun Metin',
-            self::SELECT => 'Seçim Kutusu',
-            self::FILE => 'Dosya',
-            self::DATE => 'Tarih',
-            self::CHECKBOX => 'Onay Kutusu',
-            self::RADIO => 'Seçim Düğmesi',
+            self::TEXT => trans('filament-form-maker::form-maker.enums.field_types.text'),
+            self::PHONE => trans('filament-form-maker::form-maker.enums.field_types.phone'),
+            self::TEXTAREA => trans('filament-form-maker::form-maker.enums.field_types.textarea'),
+            self::SELECT => trans('filament-form-maker::form-maker.enums.field_types.select'),
+            self::FILE => trans('filament-form-maker::form-maker.enums.field_types.file'),
+            self::DATE => trans('filament-form-maker::form-maker.enums.field_types.date'),
+            self::CHECKBOX => trans('filament-form-maker::form-maker.enums.field_types.checkbox'),
+            self::RADIO => trans('filament-form-maker::form-maker.enums.field_types.radio'),
         };
     }
 

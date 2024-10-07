@@ -11,7 +11,6 @@ class FormPicker extends Forms\Components\Select
     {
         parent::setUp();
 
-        $this->native(false);
         $this->searchable();
         $this->preload();
         $this->options(fn () => FormBuilder::pluck('name', 'id')->toArray());

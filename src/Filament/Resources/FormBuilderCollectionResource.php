@@ -49,20 +49,20 @@ class FormBuilderCollectionResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
-                            ->label('Adı')
+                            ->label(trans('filament-form-maker::form-maker.resources.collections.inputs.name'))
                             ->required(),
                         Forms\Components\ToggleButtons::make('type')
-                            ->label('Tipi')
+                            ->label(trans('filament-form-maker::form-maker.resources.collections.inputs.type'))
                             ->live()
                             ->inline()
                             ->options([
-                                'list' => 'Liste',
-                                'model' => 'Model',
+                                'list' => trans('filament-form-maker::form-maker.resources.collections.inputs.type_options.list'),
+                                'model' => trans('filament-form-maker::form-maker.resources.collections.inputs.type_options.model'),
                             ])
                             ->default('list')
                             ->required(),
                         Forms\Components\Select::make('model')
-                            ->label('Model')
+                            ->label(trans('filament-form-maker::form-maker.resources.collections.inputs.type_options.model'))
                             ->visible(fn ($get) => $get('type') === 'model')
                             ->native(false)
                             ->preload()
@@ -76,16 +76,16 @@ class FormBuilderCollectionResource extends Resource
                             })
                             ->required(),
                         Forms\Components\Repeater::make('values')
-                            ->label('Değerler')
+                            ->label(trans('filament-form-maker::form-maker.resources.collections.inputs.values.title'))
                             ->visible(fn ($get) => $get('type') === 'list')
-                            ->addActionLabel('Değer Ekle')
+                            ->addActionLabel(trans('filament-form-maker::form-maker.resources.collections.inputs.values.add_value'))
                             ->grid(3)
                             ->schema([
                                 Forms\Components\TextInput::make('label')
-                                    ->label('Etiket')
+                                    ->label(trans('filament-form-maker::form-maker.resources.collections.inputs.values.label'))
                                     ->required(),
                                 Forms\Components\TextInput::make('value')
-                                    ->label('Değer')
+                                    ->label(trans('filament-form-maker::form-maker.resources.collections.inputs.values.value'))
                                     ->required(),
                             ]),
                     ]),
@@ -98,14 +98,14 @@ class FormBuilderCollectionResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
-                    ->label('Adı'),
+                    ->label(trans('filament-form-maker::form-maker.resources.collections.inputs.name')),
                 Tables\Columns\TextColumn::make('type')
-                    ->label('Tipi')
+                    ->label(trans('filament-form-maker::form-maker.resources.collections.inputs.type'))
                     ->badge()
                     ->color('info')
                     ->formatStateUsing(function ($state, $record) {
                         return match ($state) {
-                            default => 'Liste',
+                            default => trans('filament-form-maker::form-maker.resources.collections.inputs.type'),
                             'model' => (new $record->model)->getClassName(),
                         };
                     }),

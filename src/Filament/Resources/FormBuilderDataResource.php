@@ -76,38 +76,38 @@ class FormBuilderDataResource extends Resource
                     ->columns(2)
                     ->schema([
                         TextEntry::make('name')
-                            ->label('Form Adı'),
+                            ->label(trans('filament-form-maker::form-maker.resources.form_data.inputs.name')),
 
                         TextEntry::make('status')
-                            ->label('Durum')
+                            ->label(trans('filament-form-maker::form-maker.resources.form_data.inputs.status'))
                             ->badge()
                             ->formatStateUsing(fn ($state) => $state?->label())
                             ->color(fn ($state) => $state?->color()),
 
                         TextEntry::make('ip')
-                            ->label('IP Adresi'),
+                            ->label(trans('filament-form-maker::form-maker.resources.form_data.inputs.ip_address')),
 
                         TextEntry::make('url')
                             ->label('URL'),
 
                         TextEntry::make('user_agent')
                             ->columnSpanFull()
-                            ->label('Tarayıcı Bilgisi'),
+                            ->label(trans('filament-form-maker::form-maker.resources.form_data.inputs.user_agent')),
 
                         TextEntry::make('file')
-                            ->label('Dosya')
+                            ->label(trans('filament-form-maker::form-maker.resources.form_data.inputs.file.label'))
                             ->columnSpanFull()
                             ->visible(fn ($record) => $record->getFirstMedia('file'))
                             ->default(function ($record) {
                                 $cv = $record->getFirstMedia('file') ? $record->getFirstMediaUrl('file') : null;
 
-                                return new HtmlString("<a href='{$cv}' download target='_self'>Dosyayı İndir</a>");
+                                return new HtmlString("<a href='{$cv}' download target='_self'>" . trans('filament-form-maker::form-maker.resources.form_data.inputs.file.download') . '</a>');
                             }),
                     ]),
 
                 Tabs::make()
                     ->schema([
-                        Tabs\Tab::make('Genel Bilgiler')
+                        Tabs\Tab::make(trans('filament-form-maker::form-maker.resources.form_data.section_title'))
                             ->columns(2)
                             ->statePath('fields')
                             ->schema(
@@ -140,7 +140,7 @@ class FormBuilderDataResource extends Resource
 
                 Tables\Columns\TextColumn::make('name')
                     ->badge()
-                    ->label('Form Adı')
+                    ->label(trans('filament-form-maker::form-maker.resources.form_data.inputs.name'))
                     ->searchable()
                     ->sortable(),
 
@@ -148,33 +148,32 @@ class FormBuilderDataResource extends Resource
                     ->badge()
                     ->formatStateUsing(fn ($state) => $state?->label())
                     ->color(fn ($state) => $state?->color())
-                    ->label('Durum')
+                    ->label(trans('filament-form-maker::form-maker.resources.form_data.inputs.status'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->label('Oluşturulma Tarihi')
+                    ->label(trans('filament-form-maker::form-maker.resources.form_data.inputs.created_at'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
-                    ->label('Değiştirme Tarihi')
+                    ->label(trans('filament-form-maker::form-maker.resources.form_data.inputs.updated_at'))
                     ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->modalHeading('Görüntüle'),
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\Action::make('close')
-                    ->label('Kapat')
+                    ->label(trans('filament-form-maker::form-maker.resources.form_data.actions.close.label'))
                     ->color('success')
                     ->icon('heroicon-o-x-circle')
                     ->requiresConfirmation()
-                    ->modalHeading('Formu Kapat')
-                    ->modalDescription('Bu formu kapatmak istediğinize emin misiniz?')
-                    ->successNotificationTitle('Form başarıyla kapatıldı.')
+                    ->modalHeading(trans('filament-form-maker::form-maker.resources.form_data.actions.close.modal.title'))
+                    ->modalDescription(trans('filament-form-maker::form-maker.resources.form_data.actions.close.modal.body'))
+                    ->successNotificationTitle(trans('filament-form-maker::form-maker.resources.form_data.actions.close.modal.success'))
                     ->action(function ($record, $action) {
                         $record->update(['status' => 'closed']);
 
@@ -182,12 +181,12 @@ class FormBuilderDataResource extends Resource
                     })->visible(fn ($record) => $record->status === FormStatus::OPEN),
                 Tables\Actions\Action::make('open')
                     ->color('danger')
-                    ->label('Yeniden Aç')
+                    ->label(trans('filament-form-maker::form-maker.resources.form_data.actions.open.label'))
                     ->icon('heroicon-o-check-circle')
                     ->requiresConfirmation()
-                    ->modalHeading('Formu Yeniden Aç')
-                    ->modalDescription('Bu formu yeniden açmak istediğinize emin misiniz?')
-                    ->successNotificationTitle('Form başarıyla yeniden açıldı.')
+                    ->modalHeading(trans('filament-form-maker::form-maker.resources.form_data.actions.open.modal.title'))
+                    ->modalDescription(trans('filament-form-maker::form-maker.resources.form_data.actions.open.modal.body'))
+                    ->successNotificationTitle(trans('filament-form-maker::form-maker.resources.form_data.actions.open.modal.success'))
                     ->action(function ($record, $action) {
                         $record->update(['status' => 'open']);
 

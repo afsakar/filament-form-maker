@@ -10,8 +10,8 @@ enum FormStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::CLOSED => 'Kapatıldı',
-            self::OPEN => 'Açık',
+            self::CLOSED => trans('filament-form-maker::form-maker.enums.form_status.closed'),
+            self::OPEN => trans('filament-form-maker::form-maker.enums.form_status.open'),
         };
     }
 

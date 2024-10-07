@@ -18,8 +18,8 @@ return [
                 'notification_name' => 'Bildirim Adı',
                 'background_color' => 'Arka Plan Rengi',
                 'mail_notifications' => 'Mail Bildirimleri',
-                'user_emails' => 'Kullanıcı E-postaları',
-                'user_emails_hint' => 'Forum\'un doldurulduktan sonra iletilmesini istediğiniz kullanıcıları seçiniz.',
+                'user_emails' => 'Bildirim E-postaları',
+                'user_emails_hint' => 'Formun doldurulduktan sonra iletilmesini istediğiniz kullanıcıları seçiniz.',
                 'static_fields' => [
                     'full_span' => 'Tam Genişlik',
                     'placeholder' => 'Placeholder',
@@ -30,6 +30,11 @@ return [
                     'html_id' => 'HTML ID',
                     'column_span' => 'Sütun Genişliği',
                     'helper_text' => 'Yardımcı Metin',
+                ],
+                'notifications' => [
+                    'label' => 'Başarılı Bildirim Ayarları',
+                    'title' => 'Başlık',
+                    'body' => 'Metin',
                 ],
                 'select_field' => [
                     'title' => 'Seçim Kutusu Ayarları',
@@ -100,10 +105,84 @@ return [
         'collections' => [
             'model_label' => 'Form Koleksiyonu',
             'plural_model_label' => 'Form Koleksiyonları',
+            'inputs' => [
+                'name' => 'Adı',
+                'type' => 'Tipi',
+                'type_options' => [
+                    'list' => 'Liste',
+                    'model' => 'Model',
+                ],
+                'values' => [
+                    'title' => 'Değerler',
+                    'label' => 'Etiket',
+                    'value' => 'Değer',
+                    'add_value' => 'Değer Ekle',
+                ],
+            ],
         ],
         'form_data' => [
             'model_label' => 'Form Verileri',
             'plural_model_label' => 'Form Verileri',
+            'inputs' => [
+                'name' => 'Form Adı',
+                'status' => 'Durum',
+                'ip_address' => 'IP Adresi',
+                'user_agent' => 'Tarayıcı Bilgisi',
+                'file' => [
+                    'label' => 'Dosya',
+                    'download' => 'Dosyayı İndir',
+                ],
+                'created_at' => 'Oluşturulma Tarihi',
+                'updated_at' => 'Güncellenme Tarihi',
+            ],
+            'section_title' => 'Form Bilgileri',
+            'actions' => [
+                'open' => [
+                    'label' => 'Yeniden Aç',
+                    'modal' => [
+                        'title' => 'Formu Yeniden Aç',
+                        'body' => 'Formu yeniden açmak istediğinize emin misiniz?',
+                        'success' => 'Form başarıyla yeniden açıldı.',
+                    ],
+                ],
+                'close' => [
+                    'label' => 'Kapat',
+                    'modal' => [
+                        'title' => 'Formu Kapat',
+                        'body' => 'Formu kapatmak istediğinize emin misiniz?',
+                        'success' => 'Form başarıyla kapatıldı.',
+                    ],
+                ],
+            ],
+        ],
+    ],
+
+    'notification' => [
+        'toast' => [
+            'title' => 'İşlem Başarılı',
+            'body' => 'Mesajınız gönderildi. En kısa sürede sizinle iletişime geçeceğiz.',
+        ],
+        'mail' => [
+            'title' => 'Yeni Bildirim - :form_name',
+            'greeting' => 'Merhaba!',
+            'view' => 'Görüntüle',
+        ],
+    ],
+
+    'enums' => [
+        'field_types' => [
+            'text' => 'Metin',
+            'phone' => 'Telefon',
+            'textarea' => 'Metin Alanı',
+            'select' => 'Seçim Kutusu',
+            'file' => 'Dosya',
+            'date' => 'Tarih',
+            'checkbox' => 'Onay Kutusu',
+            'radio' => 'Seçim Düğmesi',
+        ],
+        'form_status' => [
+            'closed' => 'Kapatıldı',
+            'open' => 'Açık',
         ],
     ],
 ];

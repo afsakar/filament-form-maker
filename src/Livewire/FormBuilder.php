@@ -59,7 +59,7 @@ class FormBuilder extends Component implements HasForms
             'admin_ids' => data_get($this->options, 'admin_ids') ?? [],
         ];
 
-        $this->submit($data);
+        $this->submit($data, $this->options);
 
         $this->form->fill(); // @phpstan-ignore-line
     }

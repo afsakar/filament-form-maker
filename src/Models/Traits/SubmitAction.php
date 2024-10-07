@@ -14,7 +14,7 @@ use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 trait SubmitAction
 {
-    public function submit($data)
+    public function submit($data, $options = []): void
     {
         $fields = self::manipulateFields($data['fields']);
 
@@ -53,15 +53,15 @@ trait SubmitAction
 
         $messageNotification = MessageNotification::make(
             (new MailMessage)
-                ->subject('Yeni Bildirim - ' . $form_name)
-                ->greeting('Merhaba!')
+                ->subject(trans('filament-form-maker::form-maker.notification.mail.title', ['form_name' => $form_name]))
+                ->greeting(trans('filament-form-maker::form-maker.notification.mail.greeting'))
                 ->lines($lines)
-                ->action('Görüntüle', FormBuilderDataResource::getUrl('view', ['record' => $form])),
+                ->action(trans('filament-form-maker::form-maker.notification.mail.view'), FormBuilderDataResource::getUrl('view', ['record' => $form])),
             Notification::make()
-                ->title('Yeni Bildirim - ' . $form_name)
+                ->title(trans('filament-form-maker::form-maker.notification.mail.title', ['form_name' => $form_name]))
                 ->actions([
                     Action::make('view')
-                        ->label('Görüntüle')
+                        ->label(trans('filament-form-maker::form-maker.notification.mail.view'))
                         ->url(FormBuilderDataResource::getUrl('view', ['record' => $form])),
                 ])
         );
@@ -71,8 +71,8 @@ trait SubmitAction
         $userModel::notification($messageNotification, data_get($data, 'admin_ids', []));
 
         Notification::make()
-            ->title('Form Submitted')
-            ->body('Your message has been sent. We will contact you as soon as possible.')
+            ->title(data_get($options, 'notifications.title') ?? trans('filament-form-maker::form-maker.notification.toast.title'))
+            ->body(data_get($options, 'notifications.body') ?? trans('filament-form-maker::form-maker.notification.toast.body'))
             ->send();
     }
 

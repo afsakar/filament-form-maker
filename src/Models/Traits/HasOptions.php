@@ -19,7 +19,9 @@ trait HasOptions
                 $colspanOptions = [];
 
                 foreach (range(1, $columns) as $column) {
-                    $colspanOptions[$column] = $column . '/' . $columns;
+                    if ($column !== $columns) {
+                        $colspanOptions[$column] = $column . '/' . $columns;
+                    }
                 }
 
                 $colspanOptions['full'] = trans('filament-form-maker::form-maker.resources.builder.options.static_fields.full_span');
@@ -72,20 +74,29 @@ trait HasOptions
                 Forms\Components\ColorPicker::make('background_color')
                     ->label(trans('filament-form-maker::form-maker.resources.builder.options.background_color'))
                     ->default('transparent'),
-                Forms\Components\Section::make(trans('filament-form-maker::form-maker.resources.builder.options.mail_notifications'))
-                    ->schema([
-                        Forms\Components\Select::make('admin_ids')
-                            ->label(trans('filament-form-maker::form-maker.resources.builder.options.user_emails'))
-                            ->hintIcon('tabler-info-circle', trans('filament-form-maker::form-maker.resources.builder.options.user_emails_hint'))
-                            ->native(false)
-                            ->searchable()
-                            ->options(function () {
-                                $userModel = Filament::auth()->getProvider()->getModel(); // @phpstan-ignore-line
+                Forms\Components\Select::make('admin_ids')
+                    ->label(trans('filament-form-maker::form-maker.resources.builder.options.user_emails'))
+                    ->hintIcon('tabler-info-circle', trans('filament-form-maker::form-maker.resources.builder.options.user_emails_hint'))
+                    ->native(false)
+                    ->searchable()
+                    ->options(function () {
+                        $userModel = Filament::auth()->getProvider()->getModel(); // @phpstan-ignore-line
 
-                                return $userModel::all()->pluck('name', 'id')->toArray();
-                            })
-                            ->multiple()
+                        return $userModel::all()->pluck('name', 'id')->toArray();
+                    })
+                    ->multiple()
+                    ->nullable(),
+                Forms\Components\Section::make(trans('filament-form-maker::form-maker.resources.builder.options.notifications.label'))
+                    ->collapsed()
+                    ->statePath('notifications')
+                    ->schema([
+                        Forms\Components\TextInput::make('title')
+                            ->label(trans('filament-form-maker::form-maker.resources.builder.options.notifications.title'))
                             ->nullable(),
+                        Forms\Components\Textarea::make('body')
+                            ->label(trans('filament-form-maker::form-maker.resources.builder.options.notifications.body'))
+                            ->nullable(),
+
                     ]),
             ]);
     }
